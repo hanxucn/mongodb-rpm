@@ -1,0 +1,17 @@
+[Unit]
+Description=podman mongod.service
+Documentation=man:podman-generate-systemd(1)
+After=network.target
+
+[Service]
+Type=forking
+ExecStartPre=/usr/bin/rm -f /%t/%n-pid /%t/%n-cid
+ExecStartPre=/usr/bin/sh -c "/usr/bin/podman rm -f mongod;true "
+ExecStart=/usr/bin/podman run --user=mongodb --rm --name mongod -p 27017:27017 --log-opt=path=/dev/null --privileged --net=host -v /var/lib/mongodb:/var/lib/mongodb:Z -v /etc/mongod.conf:/etc/mongod.conf -v /var/log/mongodb:/var/log/mongodb --conmon-pidfile /run/mongod.service-pid --cidfile /run/mongod.service-cid -d docker.io/library/mongo:version -f /etc/mongod.conf
+ExecStop=/usr/bin/sh -c "/usr/bin/podman rm -f `cat /%t/%n-cid`"
+Restart=on-failure
+KillMode=none
+PIDFile=/%t/%n-pid
+
+[Install]
+WantedBy=multi-user.target
