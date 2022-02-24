@@ -8,7 +8,7 @@ Summary: %{_name}
 License: SMARTX
 URL:     http://www.smartx.com
 
-Source0: docker-mongo-%{_version}-arm64.tar.gz
+Source0: podman-mongo-%{_version}.aarch64.tar.gz
 Source1: %{_name}.service
 Source2: logrotate.conf
 Source3: %{_name}.conf
@@ -26,7 +26,7 @@ install -d -m 777 %{buildroot}%{_localstatedir}/log/mongodb
 install -d -m 755 %{buildroot}%{_sharedstatedir}/mongodb
 
 install -d -m 755 %{buildroot}%{_datadir}/mongodb
-install -c -m 755 %{SOURCE0} %{buildroot}%{_datadir}/mongodb/docker-mongo-%{_version}-arm64.tar.gz
+install -c -m 755 %{SOURCE0} %{buildroot}%{_datadir}/mongodb/podman-mongo-%{_version}.aarch64.tar.gz
 
 install -d -m 755 %{buildroot}%{_unitdir}
 install -c -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/%{_name}.service
@@ -43,7 +43,7 @@ if [ $1 -eq 1 ]; then
     # install
     /bin/systemctl daemon-reload
 
-    podman load < %{_datadir}/mongodb/docker-mongo-%{_version}-arm64.tar.gz
+    podman load < %{_datadir}/mongodb/podman-mongo-%{_version}.aarch64.tar.gz
     sed -i 's/version/%{_version}/g' %{_unitdir}/%{_name}.service
 fi
 
@@ -52,9 +52,9 @@ if [ $1 -eq 2 ]; then
     /bin/systemctl daemon-reload
     old_images=($(podman images docker.io/library/mongo --format '{{ .ID }}'))
     for old_image in "${old_images[@]}"; do
-        podman rmi old_image
+        podman rmi $old_image
     done
-    podman load < %{_datadir}/mongodb/docker-mongo-%{_version}-arm64.tar.gz
+    podman load < %{_datadir}/mongodb/podman-mongo-%{_version}.aarch64.tar.gz
     sed -i 's/version/%{_version}/g' %{_unitdir}/%{_name}.service
 fi
 
