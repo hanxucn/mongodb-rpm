@@ -8,7 +8,7 @@ Summary: %{_name}
 License: SMARTX
 URL:     http://www.smartx.com
 
-Source0: podman-mongo-%{_version}.aarch64.tar.gz
+Source0: containerd-mongodb-%{_version}.aarch64.tar.gz
 Source1: %{_name}.service
 Source2: logrotate.conf
 Source3: %{_name}.conf
@@ -26,7 +26,7 @@ install -d -m 777 %{buildroot}%{_localstatedir}/log/mongodb
 install -d -m 755 %{buildroot}%{_sharedstatedir}/mongodb
 
 install -d -m 755 %{buildroot}%{_datadir}/mongodb
-install -c -m 755 %{SOURCE0} %{buildroot}%{_datadir}/mongodb/podman-mongo-%{_version}.aarch64.tar.gz
+install -c -m 755 %{SOURCE0} %{buildroot}%{_datadir}/mongodb/containerd-mongodb-%{_version}.aarch64.tar.gz
 
 install -d -m 755 %{buildroot}%{_unitdir}
 install -c -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/%{_name}.service
@@ -43,18 +43,18 @@ if [ $1 -eq 1 ]; then
     # install
     /bin/systemctl daemon-reload
 
-    podman load < %{_datadir}/mongodb/podman-mongo-%{_version}.aarch64.tar.gz
+    nerdctl load -i  %{_datadir}/mongodb/containerd-mongodb-%{_version}.aarch64.tar.gz
     sed -i 's/version/%{_version}/g' %{_unitdir}/%{_name}.service
 fi
 
 if [ $1 -eq 2 ]; then
     # upgrade
     /bin/systemctl daemon-reload
-    old_images=($(podman images docker.io/library/mongo --format '{{ .ID }}'))
+    old_images=($(nerdctl images docker.io/library/mongo --format '{{ .ID }}'))
     for old_image in "${old_images[@]}"; do
-        podman rmi $old_image
+        nerdctl rmi -f $old_image
     done
-    podman load < %{_datadir}/mongodb/podman-mongo-%{_version}.aarch64.tar.gz
+    nerdctl load -i  %{_datadir}/mongodb/containerd-mongodb-%{_version}.aarch64.tar.gz
     sed -i 's/version/%{_version}/g' %{_unitdir}/%{_name}.service
 fi
 
@@ -69,8 +69,8 @@ fi
 
 %files
 %defattr(-,root,root,-)
-%attr(0777,mongodb,root) %{_localstatedir}/log/mongodb
-%attr(0755,mongodb,root) %{_sharedstatedir}/mongodb
+%attr(0777,999,root) %{_localstatedir}/log/mongodb
+%attr(0755,999,root) %{_sharedstatedir}/mongodb
 %{_unitdir}/%{_name}.service
 %{_datadir}/mongodb
 %{_sysconfdir}/logrotate.d/mongodb
