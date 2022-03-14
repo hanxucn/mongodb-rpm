@@ -29,7 +29,6 @@ install -d -m 755 %{buildroot}%{_sharedstatedir}/mongodb
 install -d -m 755 %{buildroot}%{_datadir}/mongodb
 install -c -m 755 %{SOURCE0} %{buildroot}%{_datadir}/mongodb/
 
-
 install -d -m 755 %{buildroot}%{_unitdir}
 install -c -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/%{_name}.service
 
@@ -47,6 +46,7 @@ if [ $1 -eq 1 ]; then
     mkdir -p /opt/mongodb/%{_version}/
     tar xzf %{_datadir}/mongodb/mongo-binary.%{_version}.tar.gz -C /opt/mongodb/%{_version}/
     sed -i 's/mongo_version/%{_version}/g' %{_unitdir}/%{_name}.service
+    sed -i 's/base_version/%{ubuntu_version}/g' %{_unitdir}/%{_name}.service
 fi
 
 if [ $1 -eq 2 ]; then
@@ -55,6 +55,7 @@ if [ $1 -eq 2 ]; then
     mkdir -p /opt/mongodb/%{_version}/
     tar xzf %{_datadir}/mongodb/mongo-binary.%{_version}.tar.gz -C /opt/mongodb/%{_version}/
     sed -i 's/mongo_version/%{_version}/g' %{_unitdir}/%{_name}.service
+    sed -i 's/base_version/%{ubuntu_version}/g' %{_unitdir}/%{_name}.service
 fi
 
 
