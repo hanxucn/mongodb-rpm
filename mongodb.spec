@@ -51,7 +51,6 @@ fi
 
 if [ $1 -eq 2 ]; then
     # upgrade
-    sed -i 's/version/%{_version}/g' %{_unitdir}/%{_name}.service
     mkdir -p /opt/mongodb/%{_version}/
     tar xzf %{_datadir}/mongodb/mongo-binary.%{_version}.tar.gz -C /opt/mongodb/%{_version}/
     sed -i 's/mongo_version/%{_version}/g' %{_unitdir}/%{_name}.service
