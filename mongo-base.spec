@@ -4,7 +4,7 @@
 Name:    %{name}
 Version: %{_version}
 Release: %{_release}.el7.smartx
-Summary: %{_name}
+Summary: %{name}
 License: SMARTX
 URL:     http://www.smartx.com
 
@@ -27,14 +27,14 @@ install -c -m 755 %{SOURCE0} %{buildroot}%{_datadir}/mongodb/podman-mongodb-base
 
 if [ $1 -eq 1 ]; then
     # install
-    /bin/systemctl daemon-reload
 
     podman load < %{_datadir}/mongodb/podman-mongodb-base.%{_version}.aarch64.tar.gz
 fi
 
 if [ $1 -eq 2 ]; then
     # upgrade
-    /bin/systemctl daemon-reload
+    image_id=$(podman images -a | grep localhost/mongodb-base | awk '{print $3}')
+    podman rmi -f $image_id
     podman load < %{_datadir}/mongodb/podman-mongodb-base.%{_version}.aarch64.tar.gz
 fi
 
@@ -42,7 +42,7 @@ fi
 %preun
 if [ $1 -eq 0 ]; then
     # uninstall
-    image_id=$(podman images -a | grep localhost/mongodb-base.16 | awk '{print $3}')
+    image_id=$(podman images -a | grep localhost/mongodb-base | awk '{print $3}')
     podman rmi -f $image_id
 fi
 

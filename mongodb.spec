@@ -13,7 +13,7 @@ Source1: %{_name}.service
 Source2: logrotate.conf
 Source3: %{_name}.conf
 
-Requires:   mongodb-base%{ubuntu_version}
+Requires:   mongodb-base==%{ubuntu_version}
 
 %description
 mongodb-server

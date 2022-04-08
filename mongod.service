@@ -7,7 +7,7 @@ After=network.target
 Type=forking
 ExecStartPre=/usr/bin/rm -f /%t/%n-pid /%t/%n-cid
 ExecStartPre=/usr/bin/sh -c "/usr/bin/podman rm -f mongod;true "
-ExecStart=/usr/bin/podman run --user=mongodb --rm --name mongod -p 27017:27017 --log-opt=path=/dev/null --privileged --net=host -v /opt/mongodb/mongo_version/mongod:/usr/bin/mongod -v /opt/mongodb/mongo_version/mongo:/usr/bin/mongo -v /var/lib/mongodb:/var/lib/mongodb:Z -v /etc/mongod.conf:/etc/mongod.conf -v /var/log/mongodb:/var/log/mongodb --conmon-pidfile /run/mongod.service-pid --cidfile /run/mongod.service-cid -d localhost/mongodb-base.base_version:latest /usr/bin/mongod -f /etc/mongod.conf
+ExecStart=/usr/bin/podman run --user=mongodb --rm --name mongod -p 27017:27017 --log-opt=path=/dev/null --privileged --net=host -v /opt/mongodb/mongo_version/mongod:/usr/bin/mongod -v /opt/mongodb/mongo_version/mongo:/usr/bin/mongo -v /var/lib/mongodb:/var/lib/mongodb:Z -v /etc/mongod.conf:/etc/mongod.conf -v /var/log/mongodb:/var/log/mongodb --conmon-pidfile /run/mongod.service-pid --cidfile /run/mongod.service-cid -d localhost/mongodb-base:base_version /usr/bin/mongod -f /etc/mongod.conf
 ExecStop=/usr/bin/sh -c "/usr/bin/podman rm -f `cat /%t/%n-cid`"
 Restart=on-failure
 KillMode=none
