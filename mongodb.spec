@@ -43,6 +43,7 @@ touch %{buildroot}%{_localstatedir}/log/mongodb/mongod.log
 if [ $1 -eq 1 ]; then
     # install
     /bin/systemctl daemon-reload
+    groupadd -r -g 993 mongodb && useradd -r -g mongodb -u 184 mongodb
     mkdir -p /opt/mongodb/%{_version}/
     tar xzf %{_datadir}/mongodb/mongo-binary.%{_version}.tar.gz -C /opt/mongodb/%{_version}/
     sed -i 's/mongo_version/%{_version}/g' %{_unitdir}/%{_name}.service

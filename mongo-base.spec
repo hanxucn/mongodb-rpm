@@ -10,6 +10,7 @@ URL:     http://www.smartx.com
 
 Source0: podman-mongodb-base.%{_version}.aarch64.tar.gz
 
+Requires:   podman
 
 %description
 mongodb base image
