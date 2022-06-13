@@ -1,0 +1,20 @@
+
+FROM harbor.smartx.com/pyzbs_ci/centos-arm64:7 as builder
+
+# install rpm build tools
+RUN yum clean all \
+    && yum install -y yum-utils rpm-build
+RUN mkdir -p /root/rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
+COPY config/* /root/rpmbuild/SOURCES/
+COPY source/arm64/* /root/rpmbuild/SOURCES/
+COPY mongodb-*.spec /
+
+ARG NAME
+ARG RELEASE
+ARG BASE_VERSION
+ARG RPM_TYPE
+RUN rpmbuild --verbose \
+         --define "_name mongod" \
+         --define "_release 1" \
+         --define "base_version ${BASE_VERSION}" \
+         --bb /mongodb-${RPM_TYPE}.spec

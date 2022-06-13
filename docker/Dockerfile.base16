@@ -1,0 +1,10 @@
+FROM docker.io/library/ubuntu:16.04 as ubuntu16
+
+RUN groupadd --gid 100999 mongodb; \
+	useradd --uid 100999 --gid mongodb --home-dir /var/lib/mongodb mongodb; \
+	mkdir -p /var/lib/mongodb; \
+	chown -R mongodb:mongodb /var/lib/mongodb
+RUN apt-get update && apt-get install -y \
+    libssl1.0.0 \
+    libcurl3 \
+ && rm -rf /var/lib/apt/lists/*
