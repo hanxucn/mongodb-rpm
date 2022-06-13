@@ -1,0 +1,20 @@
+
+FROM harbor.smartx.com/pyzbs_ci/centos:7.2.1511 as builder
+
+# install rpm build tools
+RUN yum clean all \
+    && yum install -y yum-utils rpm-build
+RUN mkdir -p /root/rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
+COPY config/* /root/rpmbuild/SOURCES/
+COPY source/x86_64/* /root/rpmbuild/SOURCES/
+COPY mongodb-*.spec /
+
+ARG NAME
+ARG RELEASE
+ARG BASE_VERSION
+ARG RPM_TYPE
+RUN rpmbuild --verbose \
+         --define "_name ${NAME}" \
+         --define "_release ${RELEASE}" \
+         --define "base_version ${BASE_VERSION}" \
+         --bb /mongodb-${RPM_TYPE}.spec
